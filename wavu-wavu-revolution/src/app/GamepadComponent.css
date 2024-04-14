@@ -1,0 +1,7 @@
+.button {
+  font-weight: bold;
+}
+
+.pressed {
+  color: red;
+}
