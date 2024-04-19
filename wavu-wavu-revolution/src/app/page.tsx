@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import './GamepadComponent.css';
-import Hitbox from '../../public/controllers/hitbox.svg';
+import Hitbox from '../../public/controllers/Hitbox';
 
 const GamepadComponent: React.FC = () => {
   const [gamepadIndex, setGamepadIndex] = useState<number | null>(null);
@@ -11,7 +11,7 @@ const GamepadComponent: React.FC = () => {
   const [gamepadDetected, setGamepadDetected] = useState<string>(
     'No Controller Detected',
   );
-  const [buttonLayout, setButtonLayout] = useState<JSX.Element>();
+  const [buttonLayout, setButtonLayout] = useState<React.FC>();
 
   useEffect(() => {
     const handleGamepadConnected = (event: GamepadEvent) => {
@@ -19,9 +19,7 @@ const GamepadComponent: React.FC = () => {
       setGamepadIndex(gamepad.index);
       setGamepadButtons(gamepad.buttons);
       setGamepadDetected(gamepad.id + ' Connected');
-      setButtonLayout(
-        <Image src={Hitbox} alt='Hitbox Layout' width={800}></Image>,
-      );
+      setButtonLayout(Hitbox);
     };
 
     window.addEventListener('gamepadconnected', handleGamepadConnected);
@@ -58,12 +56,9 @@ const GamepadComponent: React.FC = () => {
           className={`button ${button.pressed ? 'pressed' : ''}`}
         >
           <p>Button {index + 1}</p>
-          <p>Pressed: {button.pressed.toString()}</p>
-          <p>Value: {button.value}</p>
         </div>
       ))}
       <div>{buttonLayout}</div>
-      {/* <Image src={Hitbox} alt='Hitbox buttons' width={900} hidden></Image> */}
     </div>
   );
 };
