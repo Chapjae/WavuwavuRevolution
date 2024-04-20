@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import Image from 'next/image';
+
 import './GamepadComponent.css';
 import Hitbox from '../../public/controllers/Hitbox';
 
@@ -13,6 +13,8 @@ const GamepadComponent: React.FC = () => {
   );
   const [buttonLayout, setButtonLayout] = useState<React.FC>();
 
+  const gpRef = useRef(null)
+
   useEffect(() => {
     const handleGamepadConnected = (event: GamepadEvent) => {
       const gamepad = event.gamepad;
@@ -20,6 +22,7 @@ const GamepadComponent: React.FC = () => {
       setGamepadButtons(gamepad.buttons);
       setGamepadDetected(gamepad.id + ' Connected');
       setButtonLayout(Hitbox);
+      mapGamepadButtonstoSVG(gamepad.buttons)
     };
 
     window.addEventListener('gamepadconnected', handleGamepadConnected);
@@ -28,6 +31,7 @@ const GamepadComponent: React.FC = () => {
       window.removeEventListener('gamepadconnected', handleGamepadConnected);
     };
   }, []);
+
 
   useEffect(() => {
     const checkGamepadState = () => {
@@ -46,6 +50,18 @@ const GamepadComponent: React.FC = () => {
     };
   }, [gamepadIndex]);
 
+  const mapGamepadButtonstoSVG = (buttons: GamepadButton[]) => {
+    buttons.forEach((button, index) => {
+      if (button.pressed) {
+        const buttonId = `button_${index}`;
+        const svgElement = gpRef.current?.querySelector(`#${buttonId}`);
+        if (svgElement) {
+          svgElement.setAttribute("fill", "red")
+        }
+      }
+    })
+  }
+
   return (
     <div>
       <h1>Button Check</h1>
@@ -59,6 +75,7 @@ const GamepadComponent: React.FC = () => {
         </div>
       ))}
       <div>{buttonLayout}</div>
+      <Hitbox ref={gpRef} />
     </div>
   );
 };
